@@ -82,9 +82,10 @@ class QueryBuilder
 
     public function delete()
     {
-        $this->update = 'DELETE FROM ' . $this->table . ' ';
+        $this->update = 'DELETE FROM ' . $this->table . ' ' . $this->where;
         return $this;
     }
+
 
     public function insert($data)
     {
@@ -109,6 +110,16 @@ class QueryBuilder
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function executeDelete()
+    {
+        $stmt = $this->pdo->prepare($this->update);
+        $stmt->execute($this->bindings);
+
+        $this->bindings = [];
+        $this->values = [];
+
+        return $stmt->rowCount();
+    }
     public function execute()
     {
         $stmt = $this->pdo->prepare($this->update);
