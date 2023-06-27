@@ -8,7 +8,7 @@ use App\api\SendingSMS;
 
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type,');
 header('Access-Control-Allow-Methods: GET,POST');
 
 $json = file_get_contents('php://input');
@@ -27,7 +27,7 @@ if ($number != "") {
         $sms = new SendingSMS($number, $randomNumber);
         $sms->sendingMessage();
         $data = [
-            'code' => "$randomNumber"
+            'code' => "$randomNumber",
         ];
         $builder->update($data)->where('phoneNumber', '=', $number)->execute();
         $result = json_encode($user);
@@ -42,6 +42,7 @@ if ($number != "") {
         $data = [
             'phoneNumber' => $number,
             'code' => $randomNumber,
+            'date_person' => date('Y-m-d H:i:s'),
         ];
         $builder->insert($data)->execute();
         $result = json_encode($data['phoneNumber']);

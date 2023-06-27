@@ -44,7 +44,25 @@ class QueryBuilder
         $this->bindings[] = $value;
         return $this;
     }
+    public function whereUp($column, $operator, $value)
+    {
+        if ($this->where === '') {
+            $this->where .= 'WHERE ';
+        } else {
+            $this->where .= 'AND ';
+        }
 
+        if (is_array($value)) {
+            $placeholders = implode(', ', array_fill(0, count($value), '?'));
+            $this->where .= "$column $operator ($placeholders)";
+            $this->bindings = array_merge($this->bindings, $value);
+        } else {
+            $this->where .= "$column $operator ?";
+            $this->bindings[] = $value;
+        }
+
+        return $this;
+    }
     public function limit($limit)
     {
         $this->limit = "LIMIT $limit";
